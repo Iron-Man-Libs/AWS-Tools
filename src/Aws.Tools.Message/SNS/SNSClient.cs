@@ -19,7 +19,6 @@ namespace Aws.Tools.Message.SNS
             _logger = logger;
         }
 
-
         public async Task PublishMessageAsync<T>(string topic, T message)
         {
             try

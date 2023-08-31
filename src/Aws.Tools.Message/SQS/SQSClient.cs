@@ -6,7 +6,6 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using Aws.Tools.Message.Serializationn;
 using Microsoft.Extensions.Logging;
-using Aws.Tools.Message.Logging;
 
 namespace Aws.Tools.Message.SQS
 {
@@ -36,7 +35,7 @@ namespace Aws.Tools.Message.SQS
             }
             else
             {
-                foreach (var message in messageResponse.Messages)
+                foreach (SQSMessage message in messageResponse.Messages)
                 {
                     try
                     {
@@ -47,7 +46,7 @@ namespace Aws.Tools.Message.SQS
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError("UNABLE_TO_PROCESS_THE_MESSAGE", message, ex);
+                        _logger.LogError(ex, "UNABLE_TO_PROCESS_THE_MESSAGE", message.ToString());
                     }
                 }
             }
