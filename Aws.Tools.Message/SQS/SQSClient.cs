@@ -35,7 +35,7 @@ namespace Aws.Tools.Message.SQS
             }
             else
             {
-                foreach (SQSMessage message in messageResponse.Messages)
+                foreach (var message in messageResponse.Messages)
                 {
                     try
                     {
@@ -46,7 +46,7 @@ namespace Aws.Tools.Message.SQS
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "UNABLE_TO_PROCESS_THE_MESSAGE", message.ToString());
+                        _logger.LogError(ex, "UNABLE_TO_PROCESS_THE_MESSAGE", message.MessageId);
                     }
                 }
             }
