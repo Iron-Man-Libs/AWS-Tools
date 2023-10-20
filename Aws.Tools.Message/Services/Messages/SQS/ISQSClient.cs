@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Aws.Tools.Message.SQS
+namespace Aws.Tools.Message.Services.Messages.SQS
 {
     public interface ISQSClient
     {

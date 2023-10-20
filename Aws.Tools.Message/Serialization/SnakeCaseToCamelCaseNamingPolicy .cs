@@ -6,12 +6,12 @@ namespace Aws.Tools.Message.Serialization
     {
         public override string ConvertName(string name)
         {
-            var parts = name.Split('_');
-            var camelCaseName = parts[0];
+            string[] parts = name.Split('_');
+            string camelCaseName = parts[0];
 
             for (int i = 1; i < parts.Length; i++)
             {
-                camelCaseName += char.ToUpper(parts[i][0]) + parts[i].Substring(1);
+                camelCaseName += char.ToUpper(parts[i][0]) + parts[i][1..];
             }
 
             return camelCaseName;

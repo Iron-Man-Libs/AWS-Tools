@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Aws.Tools.Message.Serializationn
+namespace Aws.Tools.Message.Serialization
 {
     public static class ApiJsonSerializerOptions
     {

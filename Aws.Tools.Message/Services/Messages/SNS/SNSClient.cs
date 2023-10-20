@@ -1,11 +1,11 @@
-using System.Text.Json;
-using System.Threading.Tasks;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Aws.Tools.Message.Serializationn;
+using Aws.Tools.Message.Serialization;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace Aws.Tools.Message.SNS
+namespace Aws.Tools.Message.Services.Messages.SNS
 {
     public class SNSClient : ISNSClient
     {
@@ -23,13 +23,13 @@ namespace Aws.Tools.Message.SNS
         {
             try
             {
-                var request = new PublishRequest
+                PublishRequest request = new()
                 {
                     TopicArn = topic,
-                    Message = JsonSerializer.Serialize<T>(message, new JsonSerializerOptions().Default())
+                    Message = JsonSerializer.Serialize(message, new JsonSerializerOptions().Default())
                 };
 
-                await _snsClient.PublishAsync(request);
+                _ = await _snsClient.PublishAsync(request);
 
                 _logger.LogInformation("MESSAGE_HAS_BEEN_SENT");
             }

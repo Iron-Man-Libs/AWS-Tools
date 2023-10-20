@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aws.Tools.Message.MessageModels
+namespace Aws.Tools.Message.Services.Messages.MessagesServicePath
 {
     public interface IMessagePath<T> where T : Enum
     {

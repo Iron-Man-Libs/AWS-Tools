@@ -1,7 +1,7 @@
+using Aws.Tools.Message.Services.Messages.SQS;
 using System.Threading.Tasks;
-using Aws.Tools.Message.SQS;
 
-namespace Aws.Tools.Message.Subscribers
+namespace Aws.Tools.Message.Services.Messages.Subscribers
 {
     public class Subscriber<T> : ISubscriber<T> where T : class
     {
@@ -20,3 +20,4 @@ namespace Aws.Tools.Message.Subscribers
         }
     }
 }
+

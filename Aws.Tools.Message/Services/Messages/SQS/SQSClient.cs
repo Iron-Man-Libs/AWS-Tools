@@ -1,13 +1,13 @@
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using Aws.Tools.Message.Serialization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Amazon.SQS;
-using Amazon.SQS.Model;
-using Aws.Tools.Message.Serializationn;
-using Microsoft.Extensions.Logging;
 
-namespace Aws.Tools.Message.SQS
+namespace Aws.Tools.Message.Services.Messages.SQS
 {
     public class SQSClient : ISQSClient
     {
@@ -22,27 +22,27 @@ namespace Aws.Tools.Message.SQS
 
         public async Task GetAllMessagesAsync<T>(string queueUrl, Func<T, Task> handle)
         {
-            var request = new ReceiveMessageRequest
+            ReceiveMessageRequest request = new()
             {
                 QueueUrl = queueUrl,
                 WaitTimeSeconds = 5
             };
 
-            var messageResponse = await _amazonSQS.ReceiveMessageAsync(request);
+            ReceiveMessageResponse messageResponse = await _amazonSQS.ReceiveMessageAsync(request);
             if (messageResponse.HttpStatusCode != HttpStatusCode.OK)
             {
                 _logger.LogError("UNABLE_TO_GET_MESSAGES");
             }
             else
             {
-                foreach (var message in messageResponse.Messages)
+                foreach (Amazon.SQS.Model.Message message in messageResponse.Messages)
                 {
                     try
                     {
-                        var messageEntity = JsonSerializer.Deserialize<T>(message.Body, new JsonSerializerOptions().Default());
+                        T messageEntity = JsonSerializer.Deserialize<T>(message.Body, new JsonSerializerOptions().Default());
                         await handle(messageEntity);
 
-                        await DeleteMessagesAsync(queueUrl, message.ReceiptHandle);
+                        _ = await DeleteMessagesAsync(queueUrl, message.ReceiptHandle);
                     }
                     catch (Exception ex)
                     {
@@ -56,7 +56,7 @@ namespace Aws.Tools.Message.SQS
         {
             try
             {
-                var result = await _amazonSQS.DeleteMessageAsync(queueUrl, receiptHandle);
+                DeleteMessageResponse result = await _amazonSQS.DeleteMessageAsync(queueUrl, receiptHandle);
                 return result.HttpStatusCode == HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -70,9 +70,9 @@ namespace Aws.Tools.Message.SQS
         {
             try
             {
-                var sendRequest = new SendMessageRequest(queueUrl, JsonSerializer.Serialize<T>(messageBody, new JsonSerializerOptions().Default()));
+                SendMessageRequest sendRequest = new(queueUrl, JsonSerializer.Serialize(messageBody, new JsonSerializerOptions().Default()));
 
-                var sendResult = await _amazonSQS.SendMessageAsync(sendRequest);
+                SendMessageResponse sendResult = await _amazonSQS.SendMessageAsync(sendRequest);
 
                 _logger.LogInformation("MESSAGE_HAS_BEEN_SENT");
 

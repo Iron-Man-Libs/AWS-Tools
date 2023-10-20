@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 
-namespace Aws.Tools.Message.MessageModels
+namespace Aws.Tools.Message.Services.Messages.MessagesServicePath
 {
     public class MessagePath<T> : IMessagePath<T> where T : Enum
     {
@@ -11,9 +11,9 @@ namespace Aws.Tools.Message.MessageModels
 
         public MessagePath(IOptions<MessageConfiguration> messageConfiguration)
         {
-            var region = messageConfiguration.Value.Region;
+            string region = messageConfiguration.Value.Region;
 
-            var accountId = messageConfiguration.Value.AccountId;
+            string accountId = messageConfiguration.Value.AccountId;
 
             _baseSNSARN = $"arn:aws:sns:{region}:{accountId}:";
             _baseSQSURL = $"https://sqs.{region}.amazonaws.com/{accountId}/";
@@ -27,12 +27,7 @@ namespace Aws.Tools.Message.MessageModels
 
         public string GetSQSQueueUrl(T queueName, string applicationName = null)
         {
-            if (!string.IsNullOrEmpty(applicationName))
-            {
-                return _baseSQSURL + queueName + applicationName.Trim();
-            }
-
-            return _baseSQSURL + queueName.ToString();
+            return !string.IsNullOrEmpty(applicationName) ? _baseSQSURL + queueName + applicationName.Trim() : _baseSQSURL + queueName.ToString();
         }
     }
 }
