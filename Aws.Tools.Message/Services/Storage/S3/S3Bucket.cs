@@ -30,7 +30,7 @@ namespace Aws.Tools.Message.Services.Storage.S3
                 using MemoryStream newMemoryStream = new();
                 formFile.CopyTo(newMemoryStream);
 
-                var fileName = $"{objectIdentification}{Path.GetExtension(formFile.FileName)}";
+                string fileName = $"{objectIdentification}{Path.GetExtension(formFile.FileName)}";
 
                 TransferUtilityUploadRequest uploadRequest = new()
                 {

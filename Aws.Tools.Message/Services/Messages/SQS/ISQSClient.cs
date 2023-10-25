@@ -1,4 +1,6 @@
+using Amazon.Lambda.SQSEvents;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Aws.Tools.Message.Services.Messages.SQS
@@ -8,5 +10,7 @@ namespace Aws.Tools.Message.Services.Messages.SQS
         Task GetAllMessagesAsync<T>(string queueName, Func<T, Task> handle);
 
         Task<bool> PublishMessageAsync<T>(string queueName, T messageBody);
+
+        Task<List<T>> GetAllMessagesFromBatch<T>(SQSEvent sqsEvent);
     }
 }

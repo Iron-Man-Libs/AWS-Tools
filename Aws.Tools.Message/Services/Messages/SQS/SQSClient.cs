@@ -1,9 +1,13 @@
+using Amazon.Lambda.SQSEvents;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Aws.Tools.Message.Serialization;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -83,6 +87,21 @@ namespace Aws.Tools.Message.Services.Messages.SQS
                 _logger.LogError(ex, "UNABLE_TO_PUBLISH_MESSAGE");
                 return false;
             }
+        }
+
+        public async Task<List<T>> GetAllMessagesFromBatch<T>(SQSEvent sqsEvent)
+        {
+            List<T> results = new();
+
+            foreach (SQSEvent.SQSMessage record in sqsEvent.Records)
+            {
+                using MemoryStream memoryStream = new(Encoding.UTF8.GetBytes(record.Body));
+
+                T message = await JsonSerializer.DeserializeAsync<T>(memoryStream, new JsonSerializerOptions().Default());
+                results.Add(message);
+            }
+
+            return results;
         }
     }
 }

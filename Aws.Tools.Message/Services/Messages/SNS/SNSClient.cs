@@ -2,6 +2,7 @@ using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Aws.Tools.Message.Serialization;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -19,14 +20,22 @@ namespace Aws.Tools.Message.Services.Messages.SNS
             _logger = logger;
         }
 
-        public async Task PublishMessageAsync<T>(string topic, T message)
+        public async Task PublishMessageAsync<T>(string topic, T message, string entityName = null)
         {
+            Dictionary<string, MessageAttributeValue> attributes = new();
+
+            if (!string.IsNullOrEmpty(entityName))
+            {
+                attributes.Add("EntityType", new MessageAttributeValue() { DataType = "String", StringValue = entityName });
+            }
+
             try
             {
                 PublishRequest request = new()
                 {
                     TopicArn = topic,
-                    Message = JsonSerializer.Serialize(message, new JsonSerializerOptions().Default())
+                    Message = JsonSerializer.Serialize(message, new JsonSerializerOptions().Default()),
+                    MessageAttributes = attributes ?? null
                 };
 
                 _ = await _snsClient.PublishAsync(request);

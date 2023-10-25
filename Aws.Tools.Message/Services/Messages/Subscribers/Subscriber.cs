@@ -1,4 +1,6 @@
+using Aws.Tools.Message.Serialization;
 using Aws.Tools.Message.Services.Messages.SQS;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Aws.Tools.Message.Services.Messages.Subscribers
@@ -12,6 +14,13 @@ namespace Aws.Tools.Message.Services.Messages.Subscribers
         {
             _sqsClient = sqsClient;
             _handler = handler;
+        }
+
+        public async Task ProcessMessage(string message)
+        {
+            T entity = JsonSerializer.Deserialize<T>(message, new JsonSerializerOptions().Default());
+
+            await _handler.Process(entity);
         }
 
         public async Task Subscribe(string queueName)

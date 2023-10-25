@@ -5,11 +5,12 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <PackageId>AWSToolsPack</PackageId>
-    <Version>1.5.3-alpha</Version>
+    <Version>1.6.0-alpha</Version>
     <Authors>Paulo Roberto de Souza</Authors>
     <Company>Schedy</Company>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
     <PackageReference Include="AWSSDK.Core" Version="3.7.204.5" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.7" />
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.1" />
