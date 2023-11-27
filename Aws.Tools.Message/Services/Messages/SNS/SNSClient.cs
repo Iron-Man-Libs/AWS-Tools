@@ -20,13 +20,18 @@ namespace Aws.Tools.Message.Services.Messages.SNS
             _logger = logger;
         }
 
-        public async Task PublishMessageAsync<T>(string topic, T message, string entityName = null)
+        public async Task PublishMessageAsync<T>(string topic, T message, string entityName = null, string apiName = null)
         {
             Dictionary<string, MessageAttributeValue> attributes = new();
 
             if (!string.IsNullOrEmpty(entityName))
             {
-                attributes.Add("EntityType", new MessageAttributeValue() { DataType = "String", StringValue = entityName });
+                attributes.Add("EntityName", new MessageAttributeValue() { DataType = "String", StringValue = entityName });
+            }
+
+            if (!string.IsNullOrEmpty(apiName))
+            {
+                attributes.Add("ApiName", new MessageAttributeValue() { DataType = "String", StringValue = apiName });
             }
 
             try
