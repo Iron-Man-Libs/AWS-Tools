@@ -56,7 +56,7 @@ namespace Aws.Tools.Message.Services.Messages.SQS
             }
         }
 
-        private async Task<bool> DeleteMessagesAsync(string queueUrl, string receiptHandle)
+        public async Task<bool> DeleteMessagesAsync(string queueUrl, string receiptHandle)
         {
             try
             {

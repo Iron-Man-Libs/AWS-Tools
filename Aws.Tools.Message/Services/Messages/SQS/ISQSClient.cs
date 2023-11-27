@@ -12,5 +12,7 @@ namespace Aws.Tools.Message.Services.Messages.SQS
         Task<bool> PublishMessageAsync<T>(string queueName, T messageBody);
 
         Task<List<T>> GetAllMessagesFromBatch<T>(SQSEvent sqsEvent);
+
+        Task<bool> DeleteMessagesAsync(string queueUrl, string receiptHandle);
     }
 }
