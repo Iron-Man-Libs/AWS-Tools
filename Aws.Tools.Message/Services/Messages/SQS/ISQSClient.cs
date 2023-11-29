@@ -13,6 +13,6 @@ namespace Aws.Tools.Message.Services.Messages.SQS
 
         Task<List<T>> GetAllMessagesFromBatch<T>(SQSEvent sqsEvent);
 
-        Task<bool> DeleteMessagesAsync(string queueUrl, string receiptHandle);
+        Task<bool> DeleteMessagesAsync(string queueName, string receiptHandle);
     }
 }

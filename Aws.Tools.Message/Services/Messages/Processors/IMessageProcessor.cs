@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Amazon.Lambda.SQSEvents;
+﻿using System.Threading.Tasks;
 using static Amazon.Lambda.SQSEvents.SQSEvent;
 
 namespace Aws.Tools.Message.Services.Messages.Processors
@@ -10,4 +8,3 @@ namespace Aws.Tools.Message.Services.Messages.Processors
         Task Process(SQSMessage message);
     }
 }
-

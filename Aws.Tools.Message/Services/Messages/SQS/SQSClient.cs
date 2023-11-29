@@ -2,7 +2,9 @@ using Amazon.Lambda.SQSEvents;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Aws.Tools.Message.Serialization;
+using Aws.Tools.Message.Services.Messages.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,15 +19,25 @@ namespace Aws.Tools.Message.Services.Messages.SQS
     {
         private readonly IAmazonSQS _amazonSQS;
         private readonly ILogger<SQSClient> _logger;
+        private readonly string _baseSQSURL;
 
-        public SQSClient(IAmazonSQS amazonSQS, ILogger<SQSClient> logger)
+        public SQSClient(IAmazonSQS amazonSQS, ILogger<SQSClient> logger, IOptions<MessageConfiguration> messageConfiguration)
         {
+            string region = messageConfiguration.Value.Region;
+            string accountId = messageConfiguration.Value.AccountId;
+
+            _baseSQSURL = $"https://sqs.{region}.amazonaws.com/{accountId}/";
+
             _amazonSQS = amazonSQS;
             _logger = logger;
         }
 
-        public async Task GetAllMessagesAsync<T>(string queueUrl, Func<T, Task> handle)
+        public string GetQueueUrl(string queueName) => _baseSQSURL + queueName.ToString();
+
+        public async Task GetAllMessagesAsync<T>(string queueName, Func<T, Task> handle)
         {
+            string queueUrl = GetQueueUrl(queueName);
+
             ReceiveMessageRequest request = new()
             {
                 QueueUrl = queueUrl,
@@ -56,11 +68,11 @@ namespace Aws.Tools.Message.Services.Messages.SQS
             }
         }
 
-        public async Task<bool> DeleteMessagesAsync(string queueUrl, string receiptHandle)
+        public async Task<bool> DeleteMessagesAsync(string queueName, string receiptHandle)
         {
             try
             {
-                DeleteMessageResponse result = await _amazonSQS.DeleteMessageAsync(queueUrl, receiptHandle);
+                DeleteMessageResponse result = await _amazonSQS.DeleteMessageAsync(GetQueueUrl(queueName), receiptHandle);
                 return result.HttpStatusCode == HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -70,11 +82,11 @@ namespace Aws.Tools.Message.Services.Messages.SQS
             }
         }
 
-        public async Task<bool> PublishMessageAsync<T>(string queueUrl, T messageBody)
+        public async Task<bool> PublishMessageAsync<T>(string queueName, T messageBody)
         {
             try
             {
-                SendMessageRequest sendRequest = new(queueUrl, JsonSerializer.Serialize(messageBody, new JsonSerializerOptions().Default()));
+                SendMessageRequest sendRequest = new(GetQueueUrl(queueName), JsonSerializer.Serialize(messageBody, new JsonSerializerOptions().Default()));
 
                 SendMessageResponse sendResult = await _amazonSQS.SendMessageAsync(sendRequest);
 

@@ -1,4 +1,4 @@
-﻿namespace Aws.Tools.Message.Services.Messages.MessagesServicePath
+﻿namespace Aws.Tools.Message.Services.Messages.Configuration
 {
     public class MessageConfiguration
     {
