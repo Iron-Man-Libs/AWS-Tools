@@ -1,6 +1,8 @@
 ﻿using Amazon;
 using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
+using Aws.Tools.Message.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Aws.Tools.Message.Services.Messages.SES
@@ -34,7 +36,7 @@ namespace Aws.Tools.Message.Services.Messages.SES
             _ = await client.SendEmailAsync(request);
         }
 
-        public async Task SendEmailWithTemplate(SESTemplateMessage templateMessage)
+        public async Task SendEmailWithTemplate<T>(SESTemplateMessage<T> templateMessage)
         {
             using AmazonSimpleEmailServiceClient client = new(RegionEndpoint.USEast1);
             SendTemplatedEmailRequest request = new()
@@ -45,7 +47,7 @@ namespace Aws.Tools.Message.Services.Messages.SES
                     ToAddresses = templateMessage.ReceiversAddress
                 },
                 Template = templateMessage.TemplateName,
-                TemplateData = templateMessage.TemplateModel
+                TemplateData = JsonSerializer.Serialize(templateMessage.TemplateModel, new JsonSerializerOptions().Default())
             };
 
             _ = await client.SendTemplatedEmailAsync(request);

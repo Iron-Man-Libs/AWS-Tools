@@ -5,6 +5,6 @@ namespace Aws.Tools.Message.Services.Messages.SES
     public interface ISESClient
     {
         Task SendEmail(SESMessage message);
-        Task SendEmailWithTemplate(SESTemplateMessage templateMessage);
+        Task SendEmailWithTemplate<T>(SESTemplateMessage<T> templateMessage);
     }
 }
