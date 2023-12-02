@@ -13,6 +13,14 @@ namespace Aws.Tools.Message.Serialization
 
             return options;
         }
+
+        public static JsonSerializerOptions SnakeCase(this JsonSerializerOptions options)
+        {
+            options.PropertyNameCaseInsensitive = true;
+            options.Converters.Add(new JsonStringEnumConverter());
+
+            return options;
+        }
     }
 }
 

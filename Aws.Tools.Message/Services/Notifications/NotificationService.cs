@@ -3,7 +3,6 @@ using Aws.Tools.Message.Services.Messages.SNS;
 using Aws.Tools.Message.Services.Notifications.SES.Templates;
 using Aws.Tools.Message.Services.Notifications.WhatsApp;
 using Aws.Tools.Message.Services.Notifications.WhatsApp.Models.TemplateMessages;
-using Aws.Tools.Message.Services.Notifications.WhatsApp.Models.TextMessages;
 using System.Threading.Tasks;
 
 namespace Aws.Tools.Message.Services.Notifications
@@ -41,14 +40,9 @@ namespace Aws.Tools.Message.Services.Notifications
             await _sesClient.SendEmailAsync(templateMessage);
         }
 
-        public async Task SendTemplateMessage(TemplateMessageModel message)
+        public async Task SendWhatsAppMessage(WhatsAppTemplateMessageModel message)
         {
-            await _whatAppService.SendTemplateMessage(message);
-        }
-
-        public async Task SendTextMessage(TextMessageModel message)
-        {
-            await _whatAppService.SendTextMessage(message);
+            await _whatAppService.SendWhatsAppMessage(message);
         }
     }
 }

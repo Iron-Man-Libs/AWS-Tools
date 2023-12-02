@@ -1,12 +1,8 @@
-﻿using System;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Aws.Tools.Message.Services.Notifications.WhatsApp.Models
 {
-    public class WhatsAppMessage
+    public abstract class WhatsAppMessage
     {
         [JsonPropertyName("messaging_product")]
         public string MessagingProduct { get; set; } = "whatsapp";
@@ -20,12 +16,9 @@ namespace Aws.Tools.Message.Services.Notifications.WhatsApp.Models
         [JsonPropertyName("type")]
         public WhatsAppMessageType Type { get; set; }
 
-        public StringContent Serialize()
+        public WhatsAppMessage(string to)
         {
-            string jsonString = JsonSerializer.Serialize(this);
-            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-            return content;
+            To = to;
         }
     }
 
