@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Aws.Tools.Message.Serialization;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Aws.Tools.Message.Serialization;
-using Aws.Tools.Message.Services.Notifications.Processors;
-using Microsoft.Extensions.Logging;
 using static Amazon.Lambda.SQSEvents.SQSEvent;
 
-namespace Aws.Tools.Message.Services.Messages.Processors
+namespace Aws.Tools.Message.Services.Notifications.Processors
 {
     public class MessageProcessor<T> : IMessageProcessor<T> where T : class
     {
@@ -23,7 +22,7 @@ namespace Aws.Tools.Message.Services.Messages.Processors
         {
             try
             {
-                var messageEntity = JsonSerializer.Deserialize<T>(message.Body, new JsonSerializerOptions().Default());
+                T messageEntity = JsonSerializer.Deserialize<T>(message.Body, new JsonSerializerOptions().Default());
                 await _handler.Process(messageEntity);
             }
             catch (Exception ex)

@@ -1,4 +1,4 @@
-﻿namespace Aws.Tools.Message.Services.Storage.S3
+﻿namespace Aws.Tools.Message.Services.Storage.S3.Configuration
 {
     public class S3BucketConfiguration
     {

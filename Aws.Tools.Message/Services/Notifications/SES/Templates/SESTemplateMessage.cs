@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Aws.Tools.Message.Services.Messages.SES
+namespace Aws.Tools.Message.Services.Notifications.SES.Templates
 {
     public class SESTemplateMessage<T>
     {

@@ -1,4 +1,4 @@
-﻿namespace Aws.Tools.Message.Services.Messages.Configuration
+﻿namespace Aws.Tools.Message.Services.Notifications.SES.Configuration
 {
     public class MessageConfiguration
     {

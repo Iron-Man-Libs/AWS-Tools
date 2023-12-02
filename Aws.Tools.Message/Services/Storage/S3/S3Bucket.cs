@@ -1,8 +1,10 @@
 ﻿using Amazon;
 using Amazon.S3;
 using Amazon.S3.Transfer;
+using Aws.Tools.Message.Services.Storage.S3.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -15,15 +17,18 @@ namespace Aws.Tools.Message.Services.Storage.S3
         private static IAmazonS3 _s3Client;
         private readonly ILogger<S3Bucket> _logger;
         private readonly TransferUtility _fileTransferUtility;
+        private readonly S3BucketConfiguration _bucketConfiguration;
 
-        public S3Bucket(ILogger<S3Bucket> logger)
+        public S3Bucket(ILogger<S3Bucket> logger, IOptions<S3BucketConfiguration> bucketConfiguration)
         {
+            _ = bucketConfiguration.Value.BaseUrl ?? bucketConfiguration.Value.S3BucketPath ?? throw new ArgumentNullException("S3BucketConfiguration is null");
+            _bucketConfiguration = bucketConfiguration.Value;
             _s3Client = new AmazonS3Client(bucketRegion);
             _logger = logger;
             _fileTransferUtility = new(_s3Client);
         }
 
-        public async Task UploadFileAsync(string bucketName, string objectIdentification, IFormFile formFile, bool isPublic = false)
+        public async Task<string> UploadFileAsync(string objectIdentification, IFormFile formFile, bool isPublic = false)
         {
             try
             {
@@ -34,7 +39,7 @@ namespace Aws.Tools.Message.Services.Storage.S3
                 {
                     InputStream = newMemoryStream,
                     Key = objectIdentification,
-                    BucketName = bucketName,
+                    BucketName = _bucketConfiguration.S3BucketPath,
                     CannedACL = isPublic ? S3CannedACL.PublicRead : S3CannedACL.Private,
                     ContentType = formFile.ContentType
                 };
@@ -45,9 +50,11 @@ namespace Aws.Tools.Message.Services.Storage.S3
             {
                 _logger.LogError(ex, "UNABLE_UPLOAD_FILE {identification}", objectIdentification);
             }
+
+            return _bucketConfiguration.BaseUrl;
         }
 
-        public async Task<Stream> DownloadFileAsync(string bucketName, string objectIdentification)
+        public async Task<Stream> DownloadFileAsync(string objectIdentification)
         {
             try
             {
@@ -55,7 +62,7 @@ namespace Aws.Tools.Message.Services.Storage.S3
 
                 TransferUtilityOpenStreamRequest downloadRequest = new()
                 {
-                    BucketName = bucketName,
+                    BucketName = _bucketConfiguration.S3BucketPath,
                     Key = objectIdentification
                 };
 

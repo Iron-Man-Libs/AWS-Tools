@@ -1,12 +1,15 @@
 ﻿using Amazon.SimpleNotificationService;
 using Amazon.SQS;
-using Aws.Tools.Message.Services.Messages.Configuration;
-using Aws.Tools.Message.Services.Messages.Processors;
+using Aws.Tools.Message.Services.Messages.SES;
+using Aws.Tools.Message.Services.Messages.SNS;
 using Aws.Tools.Message.Services.Notifications;
+using Aws.Tools.Message.Services.Notifications.Processors;
+using Aws.Tools.Message.Services.Notifications.SES.Configuration;
+using Aws.Tools.Message.Services.Notifications.WhatsApp.Configuration;
 using Aws.Tools.Message.Services.Storage.S3;
+using Aws.Tools.Message.Services.Storage.S3.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Aws.Tools.Message
 {
@@ -14,8 +17,8 @@ namespace Aws.Tools.Message
     {
         public static void AddAWSToolsLib(this IServiceCollection services, IConfiguration configuration)
         {
-            _ = services.Configure<MessageConfiguration>(configuration.GetSection("MessageConfigurationPath") ?? throw new ArgumentNullException("MessageConfigurationPath is missing"));
-            _ = services.Configure<S3BucketConfiguration>(configuration.GetSection("S3BucketConfig") ?? throw new ArgumentNullException("S3BucketConfig is missing"));
+            _ = services.Configure<MessageConfiguration>(configuration.GetSection("MessageConfigurationPath"));
+            _ = services.Configure<S3BucketConfiguration>(configuration.GetSection("S3BucketConfig"));
 
             _ = services.AddTransient(typeof(IMessageProcessor<>), typeof(MessageProcessor<>));
             _ = services.AddTransient<INotificationService, NotificationService>();
@@ -23,6 +26,9 @@ namespace Aws.Tools.Message
             _ = services.AddScoped<IS3Bucket, S3Bucket>();
             _ = services.AddAWSService<IAmazonSQS>();
             _ = services.AddAWSService<IAmazonSimpleNotificationService>();
+            _ = services.AddTransient<ISNSClient, SNSClient>();
+            _ = services.AddTransient<ISESClient, SESClient>();
+            services.AddWhatsAppApi(configuration.GetSection("WhatsAppConfig"));
         }
     }
 }
