@@ -23,33 +23,28 @@ namespace Aws.Tools.Message.Services.Storage.S3
             _fileTransferUtility = new(_s3Client);
         }
 
-        public async Task<string> UploadFileAsync(string bucketName, string objectIdentification, IFormFile formFile, bool isPublic = false)
+        public async Task UploadFileAsync(string bucketName, string objectIdentification, IFormFile formFile, bool isPublic = false)
         {
             try
             {
                 using MemoryStream newMemoryStream = new();
                 formFile.CopyTo(newMemoryStream);
 
-                string fileName = $"{objectIdentification}{Path.GetExtension(formFile.FileName)}";
-
                 TransferUtilityUploadRequest uploadRequest = new()
                 {
                     InputStream = newMemoryStream,
-                    Key = fileName,
+                    Key = objectIdentification,
                     BucketName = bucketName,
-                    CannedACL = isPublic ? S3CannedACL.PublicRead : S3CannedACL.Private
+                    CannedACL = isPublic ? S3CannedACL.PublicRead : S3CannedACL.Private,
+                    ContentType = formFile.ContentType
                 };
 
                 await _fileTransferUtility.UploadAsync(uploadRequest);
-
-                return fileName;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "UNABLE_UPLOAD_FILE {identification}", objectIdentification);
             }
-
-            return null;
         }
 
         public async Task<Stream> DownloadFileAsync(string bucketName, string objectIdentification)

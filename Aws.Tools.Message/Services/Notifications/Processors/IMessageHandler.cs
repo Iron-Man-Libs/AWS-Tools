@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Aws.Tools.Message.Services.Messages.Subscribers
+namespace Aws.Tools.Message.Services.Notifications.Processors
 {
     public interface IMessageHandler<T> where T : class
     {

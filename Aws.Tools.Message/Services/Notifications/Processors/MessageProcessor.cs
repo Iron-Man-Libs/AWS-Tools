@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Aws.Tools.Message.Serialization;
-using Aws.Tools.Message.Services.Messages.Subscribers;
+using Aws.Tools.Message.Services.Notifications.Processors;
 using Microsoft.Extensions.Logging;
 using static Amazon.Lambda.SQSEvents.SQSEvent;
 
