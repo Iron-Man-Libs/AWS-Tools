@@ -1,4 +1,5 @@
-﻿using Amazon.SimpleNotificationService;
+﻿using Amazon.S3;
+using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Aws.Tools.Message.Services.Messages.SES;
 using Aws.Tools.Message.Services.Messages.SNS;
@@ -23,7 +24,8 @@ namespace Aws.Tools.Message
             _ = services.AddTransient(typeof(IMessageProcessor<>), typeof(MessageProcessor<>));
             _ = services.AddTransient<INotificationService, NotificationService>();
 
-            _ = services.AddScoped<IS3Bucket, S3Bucket>();
+            _ = services.AddTransient<IS3Bucket, S3Bucket>();
+            _ = services.AddAWSService<IAmazonS3>();
             _ = services.AddAWSService<IAmazonSQS>();
             _ = services.AddAWSService<IAmazonSimpleNotificationService>();
             _ = services.AddTransient<ISNSClient, SNSClient>();
