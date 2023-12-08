@@ -29,23 +29,23 @@ namespace Aws.Tools.Message.Services.Storage.S3
         {
             try
             {
-                using MemoryStream newMemoryStream = new();
-                formFile.CopyTo(newMemoryStream);
+                string keyName = $"{bucketName}/{objectIdentification}{Path.GetExtension(formFile.FileName)}";
 
-                string keyName = $"{bucketName}/{objectIdentification}";
-
-                var putRequest = new PutObjectRequest
+                using (var client = new AmazonS3Client(Amazon.RegionEndpoint.USEast1))
                 {
-                    InputStream = newMemoryStream,
-                    Key = keyName,
-                    BucketName = _bucketConfiguration.S3BucketPath,
-                    CannedACL = isPublic ? S3CannedACL.PublicRead : S3CannedACL.Private,
-                    ContentType = formFile.ContentType
-                };
+                    var transferUtility = new TransferUtility(client);
+                    var uploadRequest = new TransferUtilityUploadRequest
+                    {
+                        InputStream = formFile.OpenReadStream(),
+                        Key = keyName,
+                        BucketName = _bucketConfiguration.S3BucketPath,
+                        CannedACL = isPublic ? S3CannedACL.PublicRead : S3CannedACL.Private,
+                        ContentType = formFile.ContentType
+                    };
 
-                await _s3Client.PutObjectAsync(putRequest);
+                    await transferUtility.UploadAsync(uploadRequest);
+                }
 
-                var region = _s3Client.Config.RegionEndpoint.SystemName;
                 return $"https://{_bucketConfiguration.S3BucketPath}.s3.amazonaws.com/{keyName}";
 
             }
