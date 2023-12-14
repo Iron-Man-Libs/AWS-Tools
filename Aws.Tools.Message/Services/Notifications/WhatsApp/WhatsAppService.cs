@@ -23,10 +23,10 @@ namespace Aws.Tools.Message.Services.Notifications.WhatsApp
         {
             _logger.LogInformation($"Sending message to {message.To}");
 
-            var response = await _httpClient.PostAsJsonAsync("messages", message, new JsonSerializerOptions().SnakeCase());
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("messages", message, new JsonSerializerOptions().SnakeCase());
             if (!response.IsSuccessStatusCode)
             {
-                var errorMessage = await response.Content.ReadAsStringAsync();
+                string errorMessage = await response.Content.ReadAsStringAsync();
                 _logger.LogError($"WhatsApp Error: {response.StatusCode} | ErrorMessage: {errorMessage}");
                 return;
             }

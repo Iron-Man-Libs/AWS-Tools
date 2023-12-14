@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Aws.Tools.Message.Services.Messages.SNS
+namespace Aws.Tools.Message.Services.Notifications.SNS
 {
     public class SNSClient : ISNSClient
     {

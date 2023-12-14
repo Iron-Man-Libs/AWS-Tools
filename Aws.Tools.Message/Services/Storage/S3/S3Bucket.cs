@@ -1,5 +1,4 @@
 ﻿using Amazon.S3;
-using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Aws.Tools.Message.Services.Storage.S3.Configuration;
 using Microsoft.AspNetCore.Http;
@@ -31,10 +30,10 @@ namespace Aws.Tools.Message.Services.Storage.S3
             {
                 string keyName = $"{bucketName}/{objectIdentification}{Path.GetExtension(formFile.FileName)}";
 
-                using (var client = new AmazonS3Client(Amazon.RegionEndpoint.USEast1))
+                using (AmazonS3Client client = new(Amazon.RegionEndpoint.USEast1))
                 {
-                    var transferUtility = new TransferUtility(client);
-                    var uploadRequest = new TransferUtilityUploadRequest
+                    TransferUtility transferUtility = new(client);
+                    TransferUtilityUploadRequest uploadRequest = new()
                     {
                         InputStream = formFile.OpenReadStream(),
                         Key = keyName,

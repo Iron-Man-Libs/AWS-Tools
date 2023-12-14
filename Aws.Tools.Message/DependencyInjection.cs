@@ -1,11 +1,11 @@
 ﻿using Amazon.S3;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
-using Aws.Tools.Message.Services.Messages.SES;
-using Aws.Tools.Message.Services.Messages.SNS;
 using Aws.Tools.Message.Services.Notifications;
 using Aws.Tools.Message.Services.Notifications.Processors;
+using Aws.Tools.Message.Services.Notifications.SES;
 using Aws.Tools.Message.Services.Notifications.SES.Configuration;
+using Aws.Tools.Message.Services.Notifications.SNS;
 using Aws.Tools.Message.Services.Notifications.WhatsApp.Configuration;
 using Aws.Tools.Message.Services.Storage.S3;
 using Aws.Tools.Message.Services.Storage.S3.Configuration;

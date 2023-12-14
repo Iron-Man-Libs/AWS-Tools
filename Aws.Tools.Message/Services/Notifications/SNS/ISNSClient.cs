@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Aws.Tools.Message.Services.Messages.SNS
+namespace Aws.Tools.Message.Services.Notifications.SNS
 {
     public interface ISNSClient
     {
